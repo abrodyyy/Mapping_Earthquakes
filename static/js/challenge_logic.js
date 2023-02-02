@@ -129,7 +129,7 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geoj
     return {
       opacity: 1,
       fillOpacity: 1,
-      fillColor: getColor(feature.properties.mag),
+      fillColor: getEQColor(feature.properties.mag),
       color: "#000000",
       radius: getRadius(feature.properties.mag),
       stroke: true,
@@ -138,14 +138,17 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geoj
   }
     
   // 2.5 Change the color function to use three colors for the major earthquakes based on the magnitude of the earthquake.
-  function getColor(magnitude) {
+  function getEQColor(magnitude) {
     if (magnitude > 6) {
-      return "#ea2c2c";
+      return "#610909";
     }
     if (magnitude > 5) {
-      return "#ea822c";
+      return "#eb0505";
     }
-    return "#98ee00";
+    if (magnitude <= 5) {
+      return "#eb8305";
+    }
+    return "#d4ee00";
   }
     
   // 2.6 Use the function that determines the radius of the earthquake marker based on its magnitude.
@@ -168,7 +171,7 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geoj
      onEachFeature: function(feature, layer) {
       layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
     }
-  }).addTo(allEarthquakes);
+  }).addTo(majorEarthquakes);
 
 // 2.8 Add the major earthquakes layer to the map.
   majorEarthquakes.addTo(map)
@@ -208,18 +211,15 @@ legend.onAdd = function() {
 
   // Finally, we our legend to the map.
   legend.addTo(map);
-
+  
 
   // 3. Use d3.json to make a call to get our Tectonic Plate geoJSON data.
   d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json").then(function(data) {
-    consolte.log(data)
-
     // Pass the tectonic plate data to the geoJSON() layer.
     L.geoJson(data, {
-      color: "red",
-      weight: 2
+      color: "brown",
+      weight: 3
     }).addTo(tectonicPlates);
-
     // Add tectonic plate layer
     tectonicPlates.addTo(map);
 
